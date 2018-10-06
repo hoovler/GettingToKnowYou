@@ -1,0 +1,76 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "string"
+            },
+            "type": {
+                "type": "string"
+            },
+            "slug": {
+                "type": "string"
+            },
+            "jobTitle": {
+                "type": "string"
+            },
+            "firstName": {
+                "type": "string"
+            },
+            "lastName": {
+                "type": "string"
+            },
+            "headshot": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    },
+                    "mimeType": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "alt": {
+                        "type": "string"
+                    },
+                    "height": {
+                        "type": "integer"
+                    },
+                    "width": {
+                        "type": "integer"
+                    }
+                },
+                "required": ["alt", "id", "type"]
+            },
+            "socialLinks": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string"
+                        },
+                        "callToAction": {
+                            "type": "string"
+                        },
+                        "url": {
+                            "type": "string"
+                        }
+                    },
+                    "required": ["callToAction", "type", "url"]
+                }
+            },
+            "bio": {
+                "type": "string"
+            }
+        },
+        "required": ["firstName", "headshot", "id", "lastName", "slug", "socialLinks", "type"]
+    }
+}
