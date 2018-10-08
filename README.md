@@ -1,29 +1,126 @@
 # Getting to Know You
 
-_The API that's *in your face!*_
+_The API that's **in your face!**_
 
 ## Introduction
 
-Starting a new job is hard _enough_ without having to go about the business of learning _everyone's_ name.  In a ground-breaking new study led by that guy whose name I can't remember that cost the taxpayers $42, 
-grant-funded researchers have just discovered that nobody really bothers to force themselves to remember names when they meet new people.  It was reported in one case that one man - who had been working
-in the same position for 42 years, in a cube farm with just 15 other people (the newest of whom had begun work 16 years prior) - could not name a single coworker.  
+Starting a new job is hard _enough_ without having to go about the business of learning _everyone's_ name.  In a ground-breaking new study led by that guy whose name I can't remember that cost the taxpayers $42, grant-funded researchers have just discovered that nobody really bothers to force themselves to remember names when they meet new people.  It was reported in one case that one man (_who had been working in the same position for 42 years_) in a cube farm with just 32 other people, the newest of whom had begun work 16 years prior, could not name a single coworker.  
 
-He was able to recall each person's face, and could
-even converse with most of them about their stresses, families, joys, vacations, and other characteristics, both professional and personal; however, when asked how he addresses them, he replied, "Well, I guess I just
-try to avoid situations requiring me to call out their name.  Like, when I need someone, I just say, 'Hey man! Can I get some help?' Or, 'Yes ma'am, I can have that right away!'" 
+He was able to recall each persons' face, and could even converse with most of them about their stresses, families, joys, vacations, and other characteristics, both professional and personal; however, when asked how he addresses them, he replied, *"Well, I guess I just try to avoid situations requiring me to call out their name.  Like, when I need someone, I just say, 'Hey man! Can I get some help?' Or, 'Yes ma'am, I can have that right away!'"*
 
-The research further revealed that almost _everyone_ uses this same tactic.  The study was so alarming that several representatives introduced new legislation that would force new employees to name every single co-worker
-within the first two weeks of employment, with the failure to do so resulting in up to one disaproving look, or several awkward conversations.    
+The research further revealed that almost _everyone_ use s this same tactic.  The study was so alarming that several representatives introduced new legislation that would force new employees to name every single co-worker within the first two weeks of employment, with the failure to do so resulting in up to one disaproving look, or several awkward conversations.    
 
-_*Getting to Know You*_ is an API that presents a framework for anyone to build fun and engaging games designed to help new employees get to recognize their workmates.  Simply configure it with your own internal workforce's
-employee name and mugshot locations, and have fun!
+_**Getting to Know You**_ is an API that presents a framework for anyone to build fun and engaging games designed to help new employees get to recognize their workmates.  Simply configure it with your own internal workforce's employee name and mugshot locations, and have fun!
+
+*** 
+
+## Building from Source
+
+Building the **Getting to Know You** API has two required dependancies:
+
+1. [Java Development Kit (JDK) 1.8](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+2. [Maven 3.5.0+](https://maven.apache.org/download.cgi)
+
+You may optionally elect to install any of the below IDEs if desired:
+
+3. [Spring Tool Suite (STS) v4](https://spring.io/tools/) - _**AKA** Spring Tools 4 for Eclipse, the IDE I used to build the application_.
+4. [Eclipse IDE for Java](https://www.eclipse.org/downloads/packages/release/2018-09/r/eclipse-ide-java-developers) or [Java EE](https://www.eclipse.org/downloads/packages/release/2018-09/r/eclipse-ide-java-ee-developers) developers, with the [Spring IDE plugin](https://marketplace.eclipse.org/content/spring-ide) - _Nearly identical to the STS platform._
+5. [IntelliJ IDEA](https://www.jetbrains.com/idea/download/) with [Spring Boot configuration](https://www.jetbrains.com/help/idea/spring-boot.html) - _the clunkiest approach, IMHO - yet still supported by the Spring Boot framework..._
+
+I detail below how to set up the build environment with Java and Maven, letting reader decide which IDE, if any, to use.  Please see the links above for more information on IDE configuration.
+
+#### 1 - Install Java JDK
+
+Ensure you have Java Development Kit (JDK) 1.8 locally installed, and that the path to the Java 1.8 JDK folder is available in your system properties.
+
+| _System_ | _Instructions_ |
+| ------ | ------------ |
+| **Windows:** | Ensure `{DRIVE}:\Path\To\Java\jdk1.8` is in _System Environment Variables -> path_ variable. |
+| **Linux:** | Either install Java 1.8 using your system's package manager, or place the path to the binaries for JDK 1.8 in **.bashrc**, **.profile**, or wherever else you've set up your system init `export` variables. |
+| **Mac:** | Mac's are a mystery to me, but Java is portable.  I presume it's similar to the Linux setup since that's what the Mac CLI is based on... |
+
+Test your JVM setup by typing `java -version` into your command line console.  If you recieve a message other than one like the following, see the [Java installation instructions](https://docs.oracle.com/en/java/javase/11/install/overview-jdk-installation.html) for your specific system:
+
+```
+$ java -version
+    java version "1.8.0_181"
+    Java(TM) SE Runtime Environment (build 1.8.0_181-b13)
+    Java HotSpot(TM) 64-Bit Server VM (build 25.181-b13, mixed mode)
+```
+
+#### 2 - Install Maven
+
+[Download](https://maven.apache.org/download.cgi) a version of Maven compatible with Java 1.8 (Java 1.7+ in the [compatibility chart](https://maven.apache.org/docs/history.html), and follow the [installation instructions](https://maven.apache.org/install.html) for your specific system.  The requirement for Maven is Java, which we've installed above. 
+
+### 3 - Build & Run Executable JAR
+
+**NOTE:** If using the **STS v4** IDE, you can skip this build process altogether (without creating the executable JAR) by right-clicking the top-level **getting-to-know-you** node in the IDE's Java Browsing perspective, and select **Run As** -> **Spring Boot App**.  This is the same as executing the following terminal command: `$ mvnw spring-boot:run`
+
+1. Update the Maven project to ensure the required artifacts have been downloaded.
+2. Execute the Maven build to build the executable JAR:
+    * **IDE:** Run the _/getting-to-know-you/mvnw[.cmd]+_ file (regex matching _**mvnw**_ for *nix or _**mvnw.cmd**_ for Windows)
+    * **Windows CMD Terminal:** `> mvnw.cmd clean package`
+    * **Linux Bash/Sh Terminal:** `$ ./mvnw clean package`
+3. Run the executable JAR from your terminal:
+	* `java -jar /getting-to-know-you/target/getting-to-know-you-${version}.jar`
+
+### 4 - Testing the Service
+
+Open a new web browser instance, and connect to the following URI, either as written here, or using your own email address to replace _**test@email.com**_: _**http://localhost:8080/gtky/game?email=test@email.com**_
+
+You should receive a response containing a JSON object in the body that represents an instance of the **Getting to Know You** Game object, on top of which you can build your own _amazing_ client!
+
+*** 
+
+## Endpoint Information
+
+### Key
+
+* `<variable>`
+* `{possible_values}`
+* `[optional]`
+
+### Endpoints
+
+```
+http://localhost:8080/gtky/game?
+	email=<player@email.com>
+	[&gameMode={1:4}]
+	[&leaderboardLength={1:N}]
+
+http://localhost:8080/gtky/game/submit?
+	email=<player@email.com>
+	&featuredItem=<featuredItem_ofQuestionObject>
+	&selectionId=<selectionId_ofChosenQuestionObject>
+```
+
+### Input Parameters
+
+_String_ **playerEmail**
+* The email for the new employee.  
+* This is used as a unique value for persistence, and should be used for both the /game? and /game/submit? endpoints in order to properly record player statistics.
+
+_int_ **gameMode**
+* An integer representing the value of an enumerated list:
+    * **gameMode=1:** Normal mode - _Question_ object with six image URLs, and one name.
+	* **gameMode=2:** Reversed mode - _Question_ object with six names, and one image URL.
+	* **gameMode=3:** Normal MATT mode - _Question_ object with six image URLs of employees named `'[m|M]att.*'`, and one `'[m|M]att.*'` name.
+	* **gameMode=4:** Reversed MATT mode - _Question_ object with six `'[m|M]att.*'` names, and one image URL of an employee named `'[m|M]att.*'`.
+
+_int_ **leaderboardLength**
+
+_String_ **featuredItem**
+
+_String_ **selectionId**
+	
+### Return Format
+
+***
 
 ## Technical Specifications 
 
-Language
-	Java 1.8, 
-Framework
-	Spring Boot v2.0.5
-Interface Data Type
-	JSON
-Endpoints
+|       -       | Item                        | Version | Build        |
+|---------------|-----------------------------|---------|--------------|
+| **Compiler**  | Java JDK                    | 1.8.0   | 181          |
+| **Framework** | Spring Boot MVC             | 2.0.5   | RELEASE      |
+| **IDE**       | Spring Tool Suite (Eclipse) | 4.0.0   | 201809220817 |

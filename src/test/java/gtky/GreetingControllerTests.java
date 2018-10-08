@@ -49,14 +49,14 @@ public class GreetingControllerTests {
     	put("initParamValue2", "1");
     }};
     
-    private static final Map<String, String> playParams = new HashMap<String, String>() {
+/*    private static final Map<String, String> playParams = new HashMap<String, String>() {
 		private static final long serialVersionUID = -1246034639002287429L;
 	{
     	put("playParamName1", "selection");
     	put("playParamValue1", "1");
     	put("playParamName2", "sessionId");
     	//put("playParamValue2", "1");
-    }};
+    }};*/
     
     @Test
     public void noParamGreetingShouldReturnDefaultMessage() throws Exception {
