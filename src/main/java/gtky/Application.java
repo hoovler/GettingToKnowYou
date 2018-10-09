@@ -30,8 +30,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class Application {
 
-	/** The Constant log. */
+	/** Logging */
 	private static final Logger log = LoggerFactory.getLogger(Application.class);
+	/** ******* */
 
 	/**
 	 * The main method.

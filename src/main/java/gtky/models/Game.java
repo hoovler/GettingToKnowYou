@@ -24,11 +24,16 @@ package gtky.models;
 
 import java.io.IOException;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import gtky.GettingToKnowYou;
-import gtky.models.supporting.Leaderboard;
-import gtky.models.supporting.Question;
-import gtky.persistence.Player;
+import gtky.persistence.PlayerService;
+import gtky.persistence.entities.Player;
+import gtky.persistence.repositories.PlayerRepository;
 import gtky.utils.GameMode;
+import gtky.utils.Global;
 
 /**
  * The Class Game.
@@ -49,13 +54,12 @@ import gtky.utils.GameMode;
  * 
  */
 public class Game extends GettingToKnowYou {
+	
+	/** Logging */
+	private static final Logger log = LoggerFactory.getLogger(Game.class);
+	/** ******* */
 
-
-
-    // ****************************************
-
-    /** The playerEmail attribute of the Game object. */
-    private Player player;
+    // ************************************************ API FIELDS
 
     /** The leaderboard attribute of the Game object. */
     private Leaderboard leaderboard;
@@ -63,41 +67,49 @@ public class Game extends GettingToKnowYou {
     /** The questions attribute of the Game object. */
     private Question question;
 
+    // ************************************************ INTERNAL FIELDS
+    
+    /** The playerEmail attribute of the Game object. */
+    private Player player;
+    
     /** The gameMode attribute of the Game object. */
     private GameMode gameMode;
 
     // ************************************************ GETTERS
-
-    public Player getPlayer() {
-        return player;
-    }
-
+    
     public Leaderboard getLeaderboard() {
         return leaderboard;
     }
 
-    public Question getQuestions() {
+    public Question getQuestion() {
         return question;
     }
+    
+    protected Player getPlayer() {
+        return player;
+    }
 
-    public GameMode getGameMode() {
+    protected GameMode getGameMode() {
         return gameMode;
     }
 
     // ************************************************ SETTERS
-    public void setPlayerEmail(Player player) {
-        this.player = player;
-    }
-
-    public void setGameMode(GameMode gameMode) {
+    
+    protected void setGameMode(GameMode gameMode) {
         this.gameMode = gameMode;
     }
 
     public void setLeaderboard(Leaderboard leaderboard) {
         this.leaderboard = leaderboard;
     }
+    
+    protected void setPlayer(Player player) {
+    	this.player = player;
+    }
+    
+    
 
-    public void setQuestions(Question question) {
+    public void setQuestion(Question question) {
         this.question = question;
     }
 
@@ -111,7 +123,7 @@ public class Game extends GettingToKnowYou {
     }
 
     public Game(String playerEmail) throws IOException {
-        initGame(playerEmail, GAMEMODE_DEFAULT, LEADERBOARD_LENGTH_DEFAULT);
+        setupGame(playerEmail, Global.DEFAULT_GAMEMODE, Global.DEFAULT_LEADLEN);
     }
 
     /**
@@ -125,7 +137,7 @@ public class Game extends GettingToKnowYou {
      *                     Signals that an I/O exception has occurred.
      */
     public Game(String playerEmail, int mode) throws IOException {
-        initGame(playerEmail, mode, LEADERBOARD_LENGTH_DEFAULT);
+        setupGame(playerEmail, mode, Global.DEFAULT_LEADLEN);
     }
 
     /**
@@ -139,7 +151,7 @@ public class Game extends GettingToKnowYou {
      *                     Signals that an I/O exception has occurred.
      */
     public Game(String playerEmail, int mode, int leaderboardLength) throws IOException {
-        initGame(playerEmail, mode, leaderboardLength);
+        setupGame(playerEmail, mode, leaderboardLength);
     }
 
     // ************************************************ INITIALIZE CLASS
@@ -154,18 +166,22 @@ public class Game extends GettingToKnowYou {
      * @throws IOException
      *                     Signals that an I/O exception has occurred.
      */
-    protected Game initGame(String email, int intGameMode, int leaderboardLength) throws IOException {
+    protected Game setupGame(String email, int intGameMode, int leaderboardLength) throws IOException {
 
         log.info("METHOD: private void initGame()");
 
-        // gameMode String to GameMode
-        // this.gameMode = setGameMode(gameMode);
-        GameMode gameMode = GameMode.values()[intGameMode - 1];
+        // validate value for gameMode...
+        GameMode[] modes = GameMode.values();
+        int numModes = modes.length;
 
+        // use NORMAL if out of bounds...
+        GameMode gameMode = (intGameMode <= numModes && intGameMode >= 0) ? modes[intGameMode - 1] : GameMode.NORMAL;
+
+        // ...and set it
         this.gameMode = gameMode;
 
         // would normally add pattern-based email validation...
-        this.player = new Player(email);
+        
 
         // retrieve leaderboard information from Player object previously built
         // from a leaderboard.json file
@@ -173,9 +189,36 @@ public class Game extends GettingToKnowYou {
 
         // read profile JSON from configured URL as data for Questions list
         // this.profilePool = new ProfilePool().InitializeProfiles(mode);
-
         this.question = new Question(gameMode);
 
+        // and record the correct answer for when the player validates it
+        Player player = new Player(email);
+        player.addQuestionAsked(this.question);
+        this.player = player;
+        //this.player.updatePlayer();
+        //this.player = new Player(email);
         return this;
+    }
+    
+    /**
+	 * Setup player.
+	 *
+	 * @param playerEmail the player email
+	 * @return the player
+	 */
+    protected Player setupPlayer(String playerEmail) {
+    	String email = StringUtils.lowerCase(playerEmail);
+		PlayerRepository playerRepo = new PlayerService().getPlayerRepository();
+		Player player;
+		// check if player exists
+		if(playerRepo.existsById(email)) {
+			player = playerRepo.findById(email).get();
+			//ArrayList<Question> questionsAsked = player.getQuestionsAsked();
+		} else {
+			player = new Player(email);
+		}
+		
+		return player;
+		//this.player.addQuestionAsked(this.question);
     }
 }

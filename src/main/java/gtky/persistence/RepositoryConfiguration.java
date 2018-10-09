@@ -19,10 +19,17 @@
  */
 package gtky.persistence;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@Repository
-public interface LeaderboardRepository extends JpaRepository<Player, String> {
+@Configuration
+@EnableAutoConfiguration
+@EntityScan(basePackages = {"gtky.persistence.entities"})
+@EnableJpaRepositories(basePackages = {"gtky.persistence.repositories"})
+@EnableTransactionManagement
+public class RepositoryConfiguration {
 
 }

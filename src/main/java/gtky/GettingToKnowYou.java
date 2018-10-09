@@ -22,71 +22,112 @@
  */
 package gtky;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.DomainValidator;
 import org.apache.commons.validator.routines.DomainValidator.ArrayType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import gtky.persistence.Player;
-import gtky.utils.GtkyGlobals;
+import gtky.persistence.entities.Player;
+import gtky.utils.ExternalProperties;
 
 /**
  * The Class GettingToKnowYou.
  *
  * @author Michael Hoovler
- * @since  Oct 8, 2018
+ * @since Oct 8, 2018
  * 
- *         Purpose: To act as a parent class for all application objects, to
- *         include resource, supporting, and persistence objects.
+ *        Purpose: To act as a parent class for all application objects, to
+ *        include resource, supporting, and persistence objects.
  */
-public class GettingToKnowYou implements GtkyGlobals {
-    
-    /**
-     * Generate random email.
-     *
-     * @return the string
-     */
-    protected String generateRandomEmail() {
+public class GettingToKnowYou {
 
-        // build handle and domain with random alpha & alphanumeric strings
-        String handle = RandomStringUtils.randomAlphanumeric(4, 10);
-        String domain = RandomStringUtils.randomAlphanumeric(3, 10);
+	/** Logging */
+	private static final Logger log = LoggerFactory.getLogger(GettingToKnowYou.class);
+	/** ******* */
+	
+	// objects used throughout the application
+	protected static final HashMap<String, String> properties = ExternalProperties.getProperties();
+	
+	
+	
+	/**
+	 * Generate random email.
+	 * 
+	 * Try to generate a believable random email address that is comprised of a
+	 * user's last name intial and first 5 characters of a last name. Names will
+	 * randomly generated using rules that try to make them seem like legitimate
+	 * human names; excludes names of those from the Small Magellanic Cloud and
+	 * Sweden.
+	 * 
+	 * Only the handle portion of the address will be believable. I am not trying to
+	 * verify whether 'comcast.gov' is a real domain; however, I am pulling actual
+	 * random top level domains prefixes, and using a small list of suffixes.
+	 * 
+	 * @return email Example output for 5 emails = {'m.pinra@comcast.gov',
+	 *         'z.ybtxp@cool.us', 'o.qdhiz@boats.gov', 'w.bdwdy@orange.edu',
+	 *         'x.fxojr@sohu.org'}
+	 */
+	protected String generateRandomEmail() {
 
-        // get valid generic top-level domains and grab a random one
-        String[] gTLDs = DomainValidator.getTLDEntries(ArrayType.GENERIC_RO);
-        String gTld = gTLDs[(int) (Math.random() * gTLDs.length)];
+		// build handle and domain with random alpha & alphanumeric strings
+		String lastInitial = RandomStringUtils.randomAlphabetic(1);
+		String firstFive = RandomStringUtils.randomAlphabetic(5);
 
-        // put it all together
-        return String.format("%s@%s.%s", handle, domain, gTld);
-    }
+		// get valid generic top-level domains
+		String[] domainPrefixes = DomainValidator.getTLDEntries(ArrayType.GENERIC_RO);
 
-    /**
-     * Generate random player.
-     *
-     * @return the player
-     */
-    protected Player generateRandomPlayer() {
-        return generateRandomPlayer(generateRandomEmail());
-    }
+		// essentially, this removes the potentially-naughty domain names
+		ArrayList<String> cleanPrefixes = new ArrayList<String>();
+		for (String domain : domainPrefixes) {
+			if (StringUtils.containsNone(domain, "--")) {
+				cleanPrefixes.add(domain);
+			}
+		}
 
-    /**
-     * Generate random player.
-     *
-     * @param  playerEmail
-     *                     the player email
-     * @return             the player
-     */
-    protected Player generateRandomPlayer(String playerEmail) {
+		// and make our random selection
+		String domain = cleanPrefixes.get((int) (Math.random() * cleanPrefixes.size()));
 
-        String email = StringUtils.isNotBlank(playerEmail) ? playerEmail : generateRandomEmail();
-        // either passed-in email,
+		// set a few top-level domain codes and grab a random one
+		String[] codes = { "com", "org", "gov", "us", "tech", "edu" };
+		String code = codes[(int) (Math.random() * codes.length)];
 
-        double averageTimeWrongMS = Math.random() * (60000 - 500) * (0.86 / 0.99);
-        double averageTimeRightMS = Math.random() * (60000 - 500) * (0.86 / 0.99);
-        long numberRight = (long) (Math.random() * 100);
-        long numberWrong = (long) (Math.random() * 100);
+		// put it all together
+		return StringUtils.lowerCase(String.format("%s.%s@%s.%s", lastInitial, firstFive, domain, code));
+	}
 
-        return new Player(email, numberRight, numberWrong, averageTimeRightMS, averageTimeWrongMS);
-    }
+	/**
+	 * Generate random player.
+	 *
+	 * @return the player
+	 */
+	protected Player generateRandomPlayer() {
+		return generateRandomPlayer(generateRandomEmail());
+	}
+
+	/**
+	 * Generate random player.
+	 *
+	 * @param playerEmail the player email
+	 * @return the player
+	 */
+	protected Player generateRandomPlayer(String playerEmail) {
+
+		
+		String email = StringUtils.isNotBlank(playerEmail) ? playerEmail : generateRandomEmail();
+		log.info("generateRandomPlayer(); Player(randomEmail=" + email +")");
+		// either passed-in email,
+
+		double averageTimeWrongMS = Math.random() * (60000 - 500) * (0.86 / 0.99);
+		double averageTimeRightMS = Math.random() * (60000 - 500) * (0.86 / 0.99);
+		long numberRight = (long) (Math.random() * 100);
+		long numberWrong = (long) (Math.random() * 100);
+
+		return new Player(email, numberRight, numberWrong, averageTimeRightMS, averageTimeWrongMS);
+	}
 
 }

@@ -20,22 +20,38 @@
  * Full license text is available at
  * <https://opensource.org/licenses/BSD-3-Clause>
  */
-package gtky.models.supporting;
-
+package gtky.models;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import gtky.GettingToKnowYou;
+import gtky.models.supporting.ProfileEntry;
+import gtky.models.supporting.ProfilePool;
 import gtky.utils.GameMode;
-import gtky.utils.GtkyGlobals;
+import gtky.utils.Global;
 
 public class Question extends GettingToKnowYou {
 
-    /** The featuredItem attribute of the Question object. */
-    private String featuredItem;
+	/** Logging */
+	private static final Logger log = LoggerFactory.getLogger(Question.class);
+	/** ******* */
+	
+	// ************************************************ API FIELDS
+	
+    /** The employee attribute of the Question object. */
+    private Employee employee;
 
-    /** The selections attribute of the Question object. */
-    private ArrayList<Selection> selections;
+    /** The options attribute of the Question object. */
+    private ArrayList<Option> options;
+    
+	// ************************************************ MEMBERS
+    
+    private static final String HEADSHOT_URL_PROTOCOL = properties.get(Global.k_protocol);
+    
+    private static final int NUM_SELECTIONS = Global.DEFAULT_NUM_SELECTIONS;
 
     // ************************************************ CONSTRUCTORS
 
@@ -65,29 +81,29 @@ public class Question extends GettingToKnowYou {
 
     // ************************************************ GETTERS
 
-    public String getObject() {
-        return featuredItem;
+    public Employee getEmployee() {
+        return employee;
     }
 
-    public ArrayList<Selection> getSelections() {
-        return selections;
+    public ArrayList<Option> getOptions() {
+        return options;
     }
 
-    // ************************************************ PUBLIC SETTERS
+    // ************************************************ SETTERS
 
-    public void setObject(String object) {
-        this.featuredItem = object;
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
 
-    public void setSelections(ArrayList<Selection> selections) {
-        this.selections = selections;
+    public void setOptions(ArrayList<Option> options) {
+        this.options = options;
     }
 
     // ************************************************ CLASS METHODS
 
     /**
      * void initQuestion(GameMode gameMode) Purpose: This method sets the Question
-     * featuredItem's
+     * employee's
      *
      * @param  gameMode
      *                     the game mode
@@ -98,11 +114,13 @@ public class Question extends GettingToKnowYou {
 
         log.info("ENTER: initQuestion(GameMode gameMode)");
         // we don't want try setting values for nonexistent objects...
-        this.featuredItem = new String();
-        this.selections = new ArrayList<Selection>();
+        this.employee = new Employee();
+        this.options = new ArrayList<Option>();
 
         // get pool of profiles based on game mode
-        ProfilePool profiles = new ProfilePool(gameMode);
+        ProfilePool profilePoolClass = new ProfilePool(gameMode);
+        ArrayList<ProfileEntry> profiles = profilePoolClass.getProfiles();
+        
         // profilePool(gameMode);
 
         // get number of last index of profile pool; used multiple times
@@ -112,37 +130,50 @@ public class Question extends GettingToKnowYou {
         boolean isReversed = (gameMode.ordinal() % 2) == 0;
 
         // must be at least 6 profiles...
-        if (maxIndex >= GtkyGlobals.NUM_SELECTIONS - 1) {
+        if (maxIndex >= NUM_SELECTIONS - 1) {
 
-            // pick random profile that will be the featured matching answer
+            // pick random profile that will be the employee profile used for answer
             int randomProfile = (int) (Math.random() * NUM_SELECTIONS);
-            boolean isFeatured = false;
+            boolean useAsAnswer = false;
+            int currentNum = maxIndex;
 
             // select random subset of 6 profiles to use...
-            for (int i = 0; i < GtkyGlobals.NUM_SELECTIONS; i++) {
+            for (int i = 0; i < NUM_SELECTIONS; i++) {
 
-                // is featured?
-                isFeatured = i == randomProfile;
+                // get a random profile from the profile pool; currentNum gets decrimented at
+                // end
+                // of loop
+                int randIndex = (int) (Math.random() * currentNum);
+                ProfileEntry profile = profiles.get(randIndex);
+                String profileId = profile.getId();
 
-                // get a random profile from the profile pool
-                ProfileEntry profile = profiles.get((int) (Math.random() * maxIndex));
+                // is answer? ternary here is actually easier to read than
+                // 'useAsAnswer=i==randomProfile'
+                useAsAnswer = (i == randomProfile) ? true : false;
 
                 // is mode reversed?
                 if (isReversed) {
 
-                    // ordinals are even, normal mode: 1 name, 6 faces
-                    this.selections.add(new Selection(profile.getId(), profile.getPhotoUrl()));
-                    if (isFeatured)
-                        this.featuredItem = profile.getDisplayName();
+                    // ordinals are even, normal mode: 6 mugs, 1 name
+                    this.options.add(new Option(profile.getId(), HEADSHOT_URL_PROTOCOL + profile.getPhotoUrl()));
+                    // if this is our lucky winner, set it as the employee
+                    if (useAsAnswer)
+                        this.employee = new Employee(profileId, profile.getDisplayName());
 
                 } else {
 
                     // ordinals are odd, reversed mode; 1 face, 6 names
-                    this.selections.add(new Selection(profile.getId(), profile.getDisplayName()));
-                    if (isFeatured)
-                        this.featuredItem = profile.getPhotoUrl();
+                    this.options.add(new Option(profile.getId(), profile.getDisplayName()));
+                    // and likewise, random winner = set employee to the URL of the lovely mugshot
+                    if (useAsAnswer)
+                        this.employee = new Employee(profileId, HEADSHOT_URL_PROTOCOL + profile.getPhotoUrl());
 
                 } // end if(mode)
+
+                // remove this profile from the selection pool... found out what happens
+                // otherwise while testing MATT mode
+                profiles.remove(randIndex);
+                currentNum--;
             } // end for(0:6)
 
         } else {

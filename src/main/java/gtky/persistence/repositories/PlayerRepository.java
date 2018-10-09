@@ -17,19 +17,12 @@
  * 
  * Full license text is available at <https://opensource.org/licenses/BSD-3-Clause>
  */
-package gtky.persistence;
+package gtky.persistence.repositories;
 
-import java.util.HashMap;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import gtky.GettingToKnowYou;
+import gtky.persistence.entities.Player;
 
-public abstract class PlayerPersistence extends GettingToKnowYou {
-	
-	protected abstract boolean isPlayerNew(String playerEmail);
-	
-	protected abstract Player getNewPlayer(String playerEmail);
-	
-	protected abstract Player getReturningPlayer(String playerEmail);
-	
-	protected abstract HashMap<String, Long> getPlayerStats();
+public interface PlayerRepository extends JpaRepository<Player, String> {
+
 }

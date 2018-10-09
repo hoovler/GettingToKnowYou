@@ -17,21 +17,15 @@
  * 
  * Full license text is available at <https://opensource.org/licenses/BSD-3-Clause>
  */
-package gtky.utils;
+package gtky.tests;
 
-import java.util.UUID;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-public class Answer {
-	
-	/** Logging */
-	private static final Logger log = LoggerFactory.getLogger(Answer.class);
-	/** ******* */
-	
-	public static String getAnswerHash(String featuredItem, String selection) {
-		log.info("ENTERING Answer.getAnswerHash(String featuredItem, String selection){}");
-		return UUID.fromString(featuredItem + selection).toString();
-	}
+@RunWith(SpringRunner.class)
+@SpringBootTest
+
+public class PersistenceTests {
 
 }

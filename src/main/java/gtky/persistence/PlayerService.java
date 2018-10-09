@@ -17,21 +17,37 @@
  * 
  * Full license text is available at <https://opensource.org/licenses/BSD-3-Clause>
  */
-package gtky.utils;
+package gtky.persistence;
 
-import java.util.UUID;
+import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-public class Answer {
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import gtky.persistence.repositories.PlayerRepository;
+
+@Repository
+@Transactional
+public class PlayerService {
 	
 	/** Logging */
-	private static final Logger log = LoggerFactory.getLogger(Answer.class);
+	private static final Logger log = LoggerFactory.getLogger(PlayerService.class);
 	/** ******* */
 	
-	public static String getAnswerHash(String featuredItem, String selection) {
-		log.info("ENTERING Answer.getAnswerHash(String featuredItem, String selection){}");
-		return UUID.fromString(featuredItem + selection).toString();
+	/** The playerRepo attribute of the PlayerLoader object. */
+    @Autowired
+    private PlayerRepository playerRepository;
+
+	@Autowired
+	public void setPlayerRepository(PlayerRepository playerRepository) {
+		this.playerRepository = playerRepository;
 	}
 
+	@Autowired
+	public PlayerRepository getPlayerRepository() {
+		log.info("ENTER PlayerService.getPlayerRepository(){}");
+		return playerRepository;
+	}
 }

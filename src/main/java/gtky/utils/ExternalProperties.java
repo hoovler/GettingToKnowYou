@@ -19,19 +19,49 @@
  */
 package gtky.utils;
 
-import java.util.UUID;
+import java.util.HashMap;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-public class Answer {
+
+public class ExternalProperties {
 	
 	/** Logging */
-	private static final Logger log = LoggerFactory.getLogger(Answer.class);
+	private static final Logger log = LoggerFactory.getLogger(ExternalProperties.class);
 	/** ******* */
 	
-	public static String getAnswerHash(String featuredItem, String selection) {
-		log.info("ENTERING Answer.getAnswerHash(String featuredItem, String selection){}");
-		return UUID.fromString(featuredItem + selection).toString();
+	private static final String BUNDLE_NAME = "gtky.utils.messages"; //$NON-NLS-1$
+
+	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
+
+	public static String getString(String key) {
+		try {
+			return RESOURCE_BUNDLE.getString(key);
+		} catch (MissingResourceException e) {
+			return '!' + key + '!';
+		}
 	}
+	
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
+	public static HashMap<String, String> getProperties() {
+		
+		log.info("ENTERING ExternalProperties.HashMap<String, String> getProperties() {}");
+		// new map that will contain the key/value pairs from the properties file
+		HashMap<String, String> properties = new HashMap<String, String>();
+		
+		for (String key : RESOURCE_BUNDLE.keySet()) {
+			properties.put(key, RESOURCE_BUNDLE.getString(key));
+		} 
+		return properties;
+	}
+	
+	
+	
 
 }

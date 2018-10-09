@@ -20,23 +20,32 @@
  * Full license text is available at
  * <https://opensource.org/licenses/BSD-3-Clause>
  */
-package gtky.models.supporting;
+package gtky.models;
 
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import gtky.GettingToKnowYou;
-import gtky.persistence.Player;
+import gtky.persistence.entities.Player;
+import gtky.utils.Global;
 
 public class Leaderboard extends GettingToKnowYou {
 
-    // ************************************************ FIELDS
-
+	/** The Constant log. */
+	private static final Logger log = LoggerFactory.getLogger(Leaderboard.class);
+	/** ***************** */
+	
+    
+	// ************************************************ API FIELDS
     private ArrayList<Player> leaders;
 
     // ************************************************ CONSTRUCTORS
 
-    public Leaderboard() {
-        initLeaderboard(LEADERBOARD_LENGTH_DEFAULT);
+    @SuppressWarnings("unlikely-arg-type")
+	public Leaderboard() {
+        initLeaderboard(Integer.parseInt(properties.get(Global.DEFAULT_LEADLEN)));
     }
 
     public Leaderboard(int boardLength) {
