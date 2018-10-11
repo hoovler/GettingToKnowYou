@@ -1,8 +1,6 @@
 # Getting to Know You
 
-> _You **ASCII** stupid question, you get a stupid **ANSI**!_<sup><red>**1**</red></sup> 
-
-***
+> _You **ASCII** stupid question, you get a stupid **ANSI**!_<sup>**1**</sup> 
 
 ## Introduction
 
