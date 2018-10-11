@@ -1,6 +1,8 @@
 # Getting to Know You
 
-_The API that's **in your face!**_
+> _You **ASCII** stupid question, you get a stupid **ANSI**!_<sup><red>**1**</red></sup> 
+
+***
 
 ## Introduction
 
@@ -29,6 +31,8 @@ You may optionally elect to install any of the below IDEs if desired:
 
 I detail below how to set up the build environment with Java and Maven, letting reader decide which IDE, if any, to use.  Please see the links above for more information on IDE configuration.
 
+***
+
 #### 1 - Install Java JDK
 
 Ensure you have Java Development Kit (JDK) 1.8 locally installed, and that the path to the Java 1.8 JDK folder is available in your system properties.
@@ -48,6 +52,8 @@ $ java -version
     Java HotSpot(TM) 64-Bit Server VM (build 25.181-b13, mixed mode)
 ```
 
+***
+
 #### 2 - Install Maven
 
 [Download](https://maven.apache.org/download.cgi) a version of Maven compatible with Java 1.8 (Java 1.7+ in the [compatibility chart](https://maven.apache.org/docs/history.html), and follow the [installation instructions](https://maven.apache.org/install.html) for your specific system.  The requirement for Maven is Java, which we've installed above. 
@@ -64,6 +70,8 @@ $ java -version
 3. Run the executable JAR from your terminal:
 	* `java -jar /getting-to-know-you/target/getting-to-know-you-${version}.jar`
 
+***	
+
 ### 4 - Testing the Service
 
 Open a new web browser instance, and connect to the following URI, either as written here, or using your own email address to replace _**test@email.com**_: _**http://localhost:8080/gtky/game?email=test@email.com**_
@@ -74,7 +82,7 @@ You should receive a response containing a JSON object in the body that represen
 
 ## Endpoint Information
 
-### Key
+**Key**
 
 * `<variable>`
 * `{possible_values}`
@@ -82,12 +90,12 @@ You should receive a response containing a JSON object in the body that represen
 
 ### Endpoints
 
-#### /game/play
+#### 1 - _/game/play_
 
 ```
 http://localhost:8080/game/play?
-	email=<player@email.com>
-	[&gameMode={1:4}]
+	email		=		<player@email.com>
+	[&gameMode	=		{1:4}]
 ```
 
 * **email** = A valid email address, used as a unique (non PK) field in an internal, mem-based Hibernate DB.
@@ -99,7 +107,7 @@ http://localhost:8080/game/play?
 	
 Returns a `Game` object:
 
-```
+```json
 {
 	"question": {
 		"employee": {
@@ -132,7 +140,8 @@ Returns a `Game` object:
 
 Clearly, if the end user spots the JSON data, he or she could really game the game.  But if you have employees who can figure out how to F12-it to browse the DOM and grab the raw API data, you have a special employee.
 
-#### /game/submit
+
+#### 2 - _/game/submit_
 
 ```
 http://localhost:8080/gtky/game/submit?
@@ -143,7 +152,7 @@ http://localhost:8080/gtky/game/submit?
 * **email** = A valid email address, used as a unique (non PK) field in an internal, mem-based Hibernate DB.
 * **optionId** = The string ''
 
-#### /game/meta
+#### 3 - _/game/meta_
 
 ```
 http://localhost:8080/gtky/game/meta?
@@ -160,3 +169,10 @@ http://localhost:8080/gtky/game/meta?
 | **Compiler**  | Java JDK                    | 1.8.0   | 181          |
 | **Framework** | Spring Boot MVC             | 2.0.5   | RELEASE      |
 | **IDE**       | Spring Tool Suite (Eclipse) | 4.0.0   | 201809220817 |
+
+***
+
+## References: This README.md
+
+
+1. Tagline courtesy of my DevStyle Eclipse plugin's startup splash-screen, on which I caught this random quote I saw while working on this project.
