@@ -40,27 +40,14 @@ import api.shared.utils.Global;
 import api.shared.utils.Utils;
 
 /**
- * The Class GameController.
+ * The Spring Boot MVC controller for the GtKY API endpoints.
+ *
+ * GtKY uses a RESTful Web Services approach to present 'players' with one
+ * multiple-choice question, the format for which is dependent upon the 'mode'
+ * parameter passed to the /game/play endpoint.
  *
  * @author Michael Hoovler
  * @since Oct 8, 2018
- *
- *        <h2>PURPOSE</h2>
- *        <p>
- *        To...
- *        </p>
- *
- *        <h2>TASKS</h2>
- *        <ul>
- *        <li>TODO: Generate repeatable, bi-directional hash with
- *        Question.featuredItem and Question.selections.get(<right-answer>)</li>
- *        <li>TODO: Ensure Game object has methods set from new instances of
- *        supporting objects</li>
- *        <li>TODO: Finish Implementing ResultsController endpoint chain</li>
- *        <li>TODO: Clean up code, comment stuff, commit to git, and
- *        submit!</li>
- *        </ul>
- *
  */
 @RestController
 @RequestMapping("/game")
