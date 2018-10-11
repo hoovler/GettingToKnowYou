@@ -173,4 +173,4 @@ http://localhost:8080/gtky/game/meta?
 ## References: This README.md
 
 
-1. Tagline courtesy of my DevStyle Eclipse plugin's startup splash-screen, on which I caught this random quote I saw while working on this project.
+1. Tagline courtesy of my DevStyle Eclipse plugin's startup splash-screen, on which I caught this random quote I saw while working on this project.  It was so good that I could not refrain from completely changing my original tagline to this one.
