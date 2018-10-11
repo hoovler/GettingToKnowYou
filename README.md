@@ -82,38 +82,74 @@ You should receive a response containing a JSON object in the body that represen
 
 ### Endpoints
 
+#### /game/play
+
 ```
-http://localhost:8080/gtky/game?
+http://localhost:8080/game/play?
 	email=<player@email.com>
 	[&gameMode={1:4}]
-	[&leaderboardLength={1:N}]
-
-http://localhost:8080/gtky/game/submit?
-	email=<player@email.com>
-	&featuredItem=<featuredItem_ofQuestionObject>
-	&selectionId=<selectionId_ofChosenQuestionObject>
 ```
 
-### Input Parameters
-
-_String_ **playerEmail**
-* The email for the new employee.  
-* This is used as a unique value for persistence, and should be used for both the /game? and /game/submit? endpoints in order to properly record player statistics.
-
-_int_ **gameMode**
-* An integer representing the value of an enumerated list:
-    * **gameMode=1:** Normal mode - _Question_ object with six image URLs, and one name.
-	* **gameMode=2:** Reversed mode - _Question_ object with six names, and one image URL.
-	* **gameMode=3:** Normal MATT mode - _Question_ object with six image URLs of employees named `'[m|M]att.*'`, and one `'[m|M]att.*'` name.
-	* **gameMode=4:** Reversed MATT mode - _Question_ object with six `'[m|M]att.*'` names, and one image URL of an employee named `'[m|M]att.*'`.
-
-_int_ **leaderboardLength**
-
-_String_ **featuredItem**
-
-_String_ **selectionId**
+* **email** = A valid email address, used as a unique (non PK) field in an internal, mem-based Hibernate DB.
+* **gameMode** = A number from 1 to 4, inclusive.
+    * 1: Normal Mode; 1 name, 6 image URLs
+	* 2: Reversed Mode; 1 image URL, 6 names
+	* 3: Normal MATT! Mode; Normal mode for Matts!
+	* 4: Reversed MATT! Mode; Reversed mode for Matts!
 	
-### Return Format
+Returns a `Game` object:
+
+```
+{
+	"question": {
+		"employee": {
+			"id": "4HVV1s9W76GEiSUU2Aaocg",
+			"value": "Williams, William"
+		},
+		"options": [{
+				"id": "4HVV1s9W76GEiSUU2Aaocg",
+				"value": "https:////images.ctfassets.net/woody.png"
+			}, {
+				"id": "4NCJTL13UkK0qEIAAcg4IQ",
+				"value": "https:////images.ctfassets.net/joel.jpg"
+			}, {
+				"id": "3zGu1K4YfKYg0Us2qQgaQI",
+				"value": "https:////images.ctfassets.net/luke.jpg"
+			}, {
+				"id": "14tyvyMcHuKOOsIGEWyyAG",
+				"value": "https:////images.ctfassets.net/Jesse.jpg"
+			}, {
+				"id": "4lh5w7atvOgYsEggioUiCU",
+				"value": "https:////images.ctfassets.net/angela.jpg"
+			}, {
+				"id": "19LrPt51IYuKq6qec8go68",
+				"value": "https:////images.ctfassets.net/Connor.jpeg"
+			}
+		]
+	}
+}
+```
+
+Clearly, if the end user spots the JSON data, he or she could really game the game.  But if you have employees who can figure out how to F12-it to browse the DOM and grab the raw API data, you have a special employee.
+
+#### /game/submit
+
+```
+http://localhost:8080/gtky/game/submit?
+	email=<player@email.com>
+	&optionId=<optionId_ofChosenQuestionObject>
+```
+
+* **email** = A valid email address, used as a unique (non PK) field in an internal, mem-based Hibernate DB.
+* **optionId** = The string ''
+
+#### /game/meta
+
+```
+http://localhost:8080/gtky/game/meta?
+	[&leaderboardLength={1:N}]
+	
+```
 
 ***
 

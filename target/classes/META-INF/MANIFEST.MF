@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Implementation-Title: Getting to Know You!
 Implementation-Version: 1.0.0
-Built-By: comik
+Built-By: Michael
 Implementation-Vendor-Id: com.databuildr.api
-Build-Jdk: 1.8.0_181
+Build-Jdk: 1.8.0_172
 Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
  ot-starter-parent/getting-to-know-you
 Created-By: Maven Integration for Eclipse
