@@ -3,7 +3,18 @@
  */
 package game.utils;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -12,6 +23,9 @@ import org.apache.commons.validator.routines.DomainValidator;
 import org.apache.commons.validator.routines.DomainValidator.ArrayType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+
+import com.google.gson.JsonObject;
 
 import game.persistence.objects.Player;
 
@@ -103,6 +117,132 @@ public class Utils {
 		final Long numberWrong = Long.valueOf((long) Math.random() * 100);
 
 		return new Player(email, numberRight, numberWrong, responseTimeAvg);
+	}
+
+	public static String getReadmeFile() throws IOException {
+		return getReadmeFile("README.md");
+	}
+
+	public static String htmlGameDocs(String readmeFile) throws IOException {
+		return renderReadme(getReadmeFile(readmeFile));
+	}
+
+	/**
+	 * Gets the readme file.
+	 *
+	 * @param filename the filename
+	 * @return the readme file
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public static String getReadmeFile(String fileName) throws IOException {
+
+		File folder = new File("").getAbsoluteFile();
+		boolean fileFound = false;
+
+		log.info("All files contained within " + folder.getAbsolutePath());
+		for (File f : folder.listFiles()) {
+			if (StringUtils.equalsIgnoreCase(f.getName(), fileName))
+				fileFound = true;
+			log.info(f.getAbsolutePath() + "; " + f.getName() + "; found? " + fileFound);
+
+		}
+
+		if (fileFound) {
+			File file = new File(folder.getAbsolutePath() + "/" + fileName);
+			if (file.exists()) {
+				// FileReader fr = new FileReader(file);
+				BufferedReader br = new BufferedReader(new FileReader(fileName));
+
+				try {
+					StringBuilder sb = new StringBuilder();
+					String line = br.readLine();
+
+					while (line != null) {
+						sb.append(line);
+						sb.append("\n");
+						line = br.readLine();
+					}
+					return sb.toString();
+				} finally {
+					br.close();
+				}
+			}
+			log.warn(fileName + " cannot be found.");
+			return null;
+		}
+		return null;
+	}
+
+	public static String renderReadme() throws IOException {
+		return renderReadme(getReadmeFile());
+	}
+
+	public static String renderReadme(String markdown) throws IOException {
+
+		// set local vars
+		final String uri = "https://api.github.com/markdown";
+		final String methodValue = "POST";
+
+		// request variables
+		Map<String, String> headers = new HashMap<>();
+		Map<String, String> paramsMap = new HashMap<>();
+
+		// request headers
+		headers.put(HttpHeaders.ACCEPT, "text/html");
+		headers.put(HttpHeaders.ACCEPT_LANGUAGE, "en-US");
+		headers.put(HttpHeaders.HOST, "api.github.com");
+		headers.put(HttpHeaders.CONNECTION, "keep-alive");
+		headers.put(HttpHeaders.USER_AGENT, "Java client");
+
+		// request parameters (JSON for Github API)
+		paramsMap.put("text", markdown);
+		paramsMap.put("mode", "markdown");
+
+		// build request body
+		JsonObject requestBody = new JsonObject();
+
+		for (String key : paramsMap.keySet()) {
+			requestBody.addProperty(key, paramsMap.get(key));
+		}
+
+		HttpURLConnection con;
+
+		String urlParameters = requestBody.toString();
+		byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+
+		URL myurl = new URL(uri);
+		con = (HttpURLConnection) myurl.openConnection();
+
+		con.setDoOutput(true);
+		con.setRequestMethod(methodValue);
+
+		for (String key : headers.keySet()) {
+			con.setRequestProperty(key, headers.get(key));
+		}
+
+		try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
+			wr.write(postData);
+		}
+
+		StringBuilder content;
+
+		try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
+
+			String line;
+			content = new StringBuilder();
+
+			while ((line = in.readLine()) != null) {
+				content.append(line);
+				content.append(System.lineSeparator());
+			}
+		}
+
+		con.disconnect();
+		log.info(content.toString());
+
+		// return content
+		return content.toString();
+
 	}
 
 }

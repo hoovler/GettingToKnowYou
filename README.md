@@ -139,10 +139,10 @@ Returns a `Game` object:
 Clearly, if the end user spots the JSON data, he or she could really game the game.  But if you have employees who can figure out how to F12-it to browse the DOM and grab the raw API data, you have a special employee.
 
 
-#### 2 - _/game/submit_
+#### 2 - _/game/eval_
 
 ```
-http://localhost:8080/gtky/game/submit?
+http://localhost:8080/gtky/game/eval?
 	email=<player@email.com>
 	&optionId=<optionId_ofChosenQuestionObject>
 ```

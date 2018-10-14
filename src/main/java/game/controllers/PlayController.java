@@ -32,31 +32,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import game.models.ProfilePool;
+import game.models.eval.Eval;
 import game.models.play.Play;
 import game.utils.Global;
 import game.utils.Utils;
 
 /**
- * The Spring Boot MVC controller for the GtKY API endpoints.
  *
- * GtKY uses a RESTful Web Services approach to present 'players' with one
- * multiple-choice question, the format for which is dependent upon the 'mode'
- * parameter passed to the /game/play endpoint.
- *
- * This <b>GameController</b> class has a total of three (3) endpoints:
- *
- * <ul>
- * <li><b>1 <i>/game/play?</i></b> Returns a <b>Game</b> object, composed of a
- * subject and six options from which to select a match.</li>
- * <li><b>2 <i>/game/submit?</i></b> Returns an <b>Eval</b> object,</li>
- * <li><b>3 <i>/game/meta?</i></b> Returns a <b>Meta</b> object,</li>
- * </ul>
  *
  * @author Michael Hoovler
  * @since Oct 8, 2018
  */
 @RestController
-@RequestMapping("/game")
+@RequestMapping("/play")
 public class PlayController {
 
 	/** Logging */
@@ -68,10 +57,11 @@ public class PlayController {
 	 * Index.
 	 *
 	 * @return the string
+	 * @throws IOException
 	 */
 	@RequestMapping("/")
-	public String index() {
-		return "This is where you would find API usage info!!";
+	public String index() throws IOException {
+		return Utils.htmlGameDocs("README.md");
 	}
 
 	/**
@@ -91,7 +81,7 @@ public class PlayController {
 	 * @throws IOException        Signals that an I/O exception has occurred.
 	 * @throws ValidatorException for unexpected parameter values.
 	 */
-	@RequestMapping("/play")
+	@RequestMapping("/question")
 	public Play play(@RequestParam(value = "email") final String playerEmail,
 			@RequestParam(value = "mode", defaultValue = "1") final int gameMode)
 			throws IOException, ValidatorException {
@@ -104,5 +94,29 @@ public class PlayController {
 			return new Play(true, Utils.getPropery(Global.k_invalid_mode));
 
 		return new Play(playerEmail, gameMode);
+	}
+
+	/**
+	 * The REST endpoint that accepts the player's email, and the ID of their guess,
+	 * and will eventually provide the right information as to whether the answer is
+	 * correct or not.
+	 *
+	 * @param playerEmail the player email
+	 * @param employeeId  the employee id
+	 * @param optionId    the option id
+	 * @return A Submission object
+	 * @throws IOException
+	 */
+	@RequestMapping("/answer")
+	public Eval eval(@RequestParam(value = "email") final String playerEmail,
+			@RequestParam(value = "optionId") final String optionId) throws ValidatorException, IOException {
+
+		if (StringUtils.isNotBlank(playerEmail) && !EmailValidator.getInstance(true, true).isValid(playerEmail))
+			return new Eval(true, Utils.getPropery(Global.k_invalid_email));
+
+		if (new ProfilePool().getProfileIds().indexOf(optionId) < 0)
+			return new Eval(true, Utils.getPropery(Global.k_invalid_id));
+
+		return new Eval(playerEmail, optionId);
 	}
 }

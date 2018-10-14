@@ -27,8 +27,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableAutoConfiguration
-@EntityScan(basePackages = "api.persistence.objects")
-@EnableJpaRepositories(basePackages = "api.persistence")
+@EntityScan(basePackages = "game.persistence.objects")
+@EnableJpaRepositories(basePackages = "game.persistence")
 @EnableTransactionManagement
 public class RepositoryConfiguration {
 }
