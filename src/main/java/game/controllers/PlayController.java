@@ -39,7 +39,12 @@ import game.utils.Global;
 import game.utils.Utils;
 
 /**
+ * The Spring Boot MVC root controller for the GettingToKnowYou API endpoints.
+ * All endpoints for this application extent this class.
  *
+ * GtKY uses a RESTful Web Services approach to present 'players' with one
+ * multiple-choice question, the format for which is dependent upon the 'mode'
+ * parameter passed to the endpoint defined in <code>PlayController</code>
  *
  * @author Michael Hoovler
  * @since Oct 8, 2018
@@ -61,7 +66,7 @@ public class PlayController {
 	 */
 	@RequestMapping("/")
 	public String index() throws IOException {
-		return Utils.htmlGameDocs("README.md");
+		return Utils.getReadmeHtml();
 	}
 
 	/**

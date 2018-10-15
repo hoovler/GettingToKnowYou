@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import game.GameController;
 import game.models.meta.Meta;
 import game.utils.Global;
 import game.utils.Utils;
@@ -55,7 +54,7 @@ import game.utils.Utils;
  */
 @RestController
 @RequestMapping("/meta")
-public class MetaController extends GameController {
+public class MetaController {
 
 	/** Logging */
 	private static final Logger log = LoggerFactory.getLogger(MetaController.class);
@@ -68,10 +67,9 @@ public class MetaController extends GameController {
 	 * @return the string
 	 * @throws IOException
 	 */
-	@Override
 	@RequestMapping("/usage")
 	public String usage() throws IOException {
-		return super.usage();
+		return Utils.getReadmeHtml();
 	}
 
 	/**

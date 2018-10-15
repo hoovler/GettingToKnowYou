@@ -47,7 +47,7 @@ public class Utils {
 	 * @return the propery
 	 */
 	public static String getPropery(final String key) {
-		return ExternalProperties.getString(key);
+		return ConfigProperties.getString(key);
 	}
 
 	public boolean isValidSubmissionId(String id) {
@@ -61,9 +61,22 @@ public class Utils {
 	}
 
 	/**
-	 * Generate random email.
+	 * Generate a random email using a combination of Apache Commons utilities;
+	 * namely: RandomStringUtils and DomainValidator.
 	 *
-	 * @return the string
+	 * @return Random Email String with 4 distinct, randomized comonents. It is
+	 *         normalized into:
+	 *         <ul>
+	 *         <li>1 alphabetic character and a period (.), followed by...</li>
+	 *         <li>5 alphabetic characters and an at sign (\@), and then...</li>
+	 *         <li>A random generic root object TLD and another period (.), and
+	 *         lastly...</li>
+	 *         <li>One of the following:
+	 *         <code>{ "com", "org", "gov", "us", "tech", "edu" }</code></li>
+	 *         </ul>
+	 *
+	 *         It all takes the following form:
+	 *         <code>String.format("%s.%s@%s.%s", lastInitial, firstFive, domain, code)</code>
 	 */
 	public static String generateRandomEmail() {
 
@@ -92,7 +105,7 @@ public class Utils {
 	}
 
 	/**
-	 * Generate random player.
+	 * Generate a random <code>Player</code> object.
 	 *
 	 * @return the player
 	 */
@@ -101,7 +114,7 @@ public class Utils {
 	}
 
 	/**
-	 * Generate random player.
+	 * Generate a random <code>Player</code> object.
 	 *
 	 * @param playerEmail the player email
 	 * @return the player
@@ -119,12 +132,36 @@ public class Utils {
 		return new Player(email, numberRight, numberWrong, responseTimeAvg);
 	}
 
-	public static String getReadmeFile() throws IOException {
-		return getReadmeFile("README.md");
+	/**
+	 * Gets the project's local readme file as HTML by using the /markdown endpoint
+	 * of Github's v3 API.
+	 *
+	 * @return the readme html
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public static String getReadmeHtml() throws IOException {
+		return githubMarkdown2Html(getFileAsString(getPropery(Global.k_readme_filepath)));
 	}
 
-	public static String htmlGameDocs(String readmeFile) throws IOException {
-		return renderReadme(getReadmeFile(readmeFile));
+	/**
+	 * Html game docs.
+	 *
+	 * @param readmeFile the readme file
+	 * @return the string
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public static String getReadmeHtml(String readmeFile) throws IOException {
+		return githubMarkdown2Html(getFileAsString(readmeFile));
+	}
+
+	/**
+	 * Gets the readme file.
+	 *
+	 * @return the readme file
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public static String getReadmeMarkdown() throws IOException {
+		return getFileAsString(getPropery(Global.k_readme_filepath));
 	}
 
 	/**
@@ -134,7 +171,7 @@ public class Utils {
 	 * @return the readme file
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static String getReadmeFile(String fileName) throws IOException {
+	public static String getFileAsString(String fileName) throws IOException {
 
 		File folder = new File("").getAbsoluteFile();
 		boolean fileFound = false;
@@ -173,11 +210,24 @@ public class Utils {
 		return null;
 	}
 
+	/**
+	 * Render readme.
+	 *
+	 * @return the string
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static String renderReadme() throws IOException {
-		return renderReadme(getReadmeFile());
+		return githubMarkdown2Html(getReadmeMarkdown());
 	}
 
-	public static String renderReadme(String markdown) throws IOException {
+	/**
+	 * Render readme.
+	 *
+	 * @param markdown the markdown
+	 * @return the string
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public static String githubMarkdown2Html(String markdown) throws IOException {
 
 		// set local vars
 		final String uri = "https://api.github.com/markdown";

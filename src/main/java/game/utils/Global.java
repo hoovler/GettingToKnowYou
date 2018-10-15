@@ -54,4 +54,6 @@ public class Global {
 	public static final String k_invalid_mode = "invalid.mode.msg"; //$NON-NLS-1$
 
 	public static final String k_invalid_id = "invalid.id.msg"; //$NON-NLS-1$
+
+	public static final String k_readme_filepath = "readme.filepath"; //$NON-NLS-1$
 }

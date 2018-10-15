@@ -26,13 +26,13 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ExternalProperties {
+public class ConfigProperties {
 
 	/** Logging */
-	private static final Logger log = LoggerFactory.getLogger(ExternalProperties.class);
+	private static final Logger log = LoggerFactory.getLogger(ConfigProperties.class);
 	/** ******* */
 
-	private static final String BUNDLE_NAME = "messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "config"; //$NON-NLS-1$
 
 	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
